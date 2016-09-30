@@ -1,0 +1,32 @@
+{
+  "name": "swank-bootstrap",
+  "homepage": "https://github.com/BxnIO/swank-bootstrap",
+  "authors": [
+    "Mark Litchfield <m@bxn.io>"
+  ],
+  "version": "0.0.1",
+  "description": "Angular 1.5+ components using Bootstrap markup",
+  "main": "dist/swank-bootstrap.min.js",
+  "keywords": [
+    "swank",
+    "swagger",
+    "angular",
+    "bootstrap"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "swank": "https://github.com/BxnIO/swank.git",
+    "angular-animate": "^1.5.8",
+    "angular-touch": "^1.5.8",
+    "bootstrap": "v3.3.7",
+    "showdown": "^1.4.3"
+  }
+}
