@@ -11,7 +11,7 @@
       body { padding-top: 80px; }
     </style>
   </head>
-  <body ng-controller="app as app">
+  <body>
     <nav class="navbar navbar-default navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
@@ -25,17 +25,9 @@
         </div>
       </div>
     </nav>
-    <div class="container">
-      <div class="row">
-        <div class="col-12">
-          <swank-info swank="app.swank"></swank-info>
-        </div>
-        <div class="col-12">
-          <swank-paths swank="app.swank"></swank-paths>
-        </div>
-      </div>
-    </div>
-
+    <!-- https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v2.0/json/petstore-with-external-docs.json -->
+    <swank-bootstrap api="'https://s3.amazonaws.com/developers.foozor.com/content-api.json'"></swank-bootstrap>
+    <!-- <swank-bootstrap api="'https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v2.0/json/petstore-with-external-docs.json'"></swank-bootstrap> -->
     <script src="./bower_components/jquery/dist/jquery.min.js"></script>
     <script src="./bower_components/angular/angular.js"></script>
     <script src="./bower_components/angular-sanitize/angular-sanitize.js"></script>
@@ -47,40 +39,12 @@
     <script src="./bower_components/z-schema/dist/ZSchema-browser.js"></script>
     <script src="./bower_components/showdown/dist/showdown.min.js"></script>
     <script src="./bower_components/swank/dist/swank.min.js"></script>
-    <script src="./dist/swank-bootstrap.min.js"></script>
+    <script src="./src/swank-bootstrap.js"></script>
     <script>
       (function(angular) {
         'use strict';
-        //var url = 'https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v2.0/json/petstore-with-external-docs.json';
-        var url = 'https://s3.amazonaws.com/developers.foozor.com/content-api.json';
 
-        function jsonLoader ($resource) {
-          return $resource(url, {}, { fetch: {method: 'GET'} });
-        }
-        jsonLoader.$inject = ['$resource'];
-
-        function TestApp(Swank, jsonFetch) {
-          var app = angular.extend(this, {
-            testmode: 'string'
-          });
-
-          switch(app.testmode) {
-            case 'json':
-              jsonFetch.fetch(function(data) { app.swank = new Swank(data); });
-              break;
-            case 'string':
-              jsonFetch.fetch(function(data) { app.swank = new Swank(JSON.stringify(data)); });
-              break;
-            case 'url':
-              app.swank = new Swank(url);
-              break;
-          }
-        }
-        TestApp.$inject = ['Swank', 'jsonFetch'];
-
-        angular.module('tester', ['ngSanitize', 'ngResource', 'ngAnimate', 'ngTouch', 'swank', 'swank.bootstrap'])
-          .service('jsonFetch', jsonLoader)
-          .controller('app', TestApp);
+        angular.module('tester', ['ngSanitize', 'ngResource', 'ngAnimate', 'ngTouch', 'swank.bootstrap']);
       })(angular);
     </script>
   </body>

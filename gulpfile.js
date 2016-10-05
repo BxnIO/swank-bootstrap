@@ -1,8 +1,12 @@
+'use strict';
+
 var gulp = require('gulp'),
     concat = require('gulp-concat'),
     rename = require('gulp-rename'),
     del = require('del'),
-    uglify = require('gulp-uglify');
+    uglify = require('gulp-uglify'),
+    connect = require('gulp-connect'),
+    open = require('gulp-open');
 
 var sources = ['src/**/*.js'];
 
@@ -19,6 +23,29 @@ gulp.task('build', ['clean'], function() {
     .pipe(gulp.dest('dist/'));
 });
 
-gulp.task('dev', function() {
-  return gulp.watch(['gulpfile.js','src/**/*.*'], ['build']);
+gulp.task('connect', function() {
+  connect.server({
+    root: './',
+    livereload: true
+  });
 });
+
+gulp.task('reload', function() {
+  gulp.src('./**/*.*')
+    .pipe(connect.reload());
+});
+
+gulp.task('watch', function() {
+  gulp.watch('./**/*.{html,js}', ['reload']);
+});
+
+gulp.task('open', function() {
+  gulp.src(__filename)
+    .pipe(open({uri: 'http://localhost:8080/test.html'}));
+});
+
+gulp.task('dev', function() {
+  return gulp.watch(['gulpfile.js','src/**/*.{html,js}'], ['build','connect','open', 'watch']);
+});
+
+gulp.task('default', ['connect', 'open', 'watch']);

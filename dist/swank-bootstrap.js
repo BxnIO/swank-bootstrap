@@ -2,6 +2,16 @@
 (function(angular) {
   'use strict';
 
+  // function LoDashFactory($window) {
+  //   if ($window._) {
+  //     var _ = $window._;
+  //     delete($window._);
+  //     console.log(_);
+  //     return _;
+  //   }
+  // }
+  // LoDashFactory.$inject = ['$window'];
+
   function SwankParseMDFilter($log) {
     return function(content) {
       try {
@@ -31,6 +41,13 @@
     };
   }
   SwankSelectify.$inject = [];
+
+  function SwankTagsController($log) {
+    var vm = this;
+    $log(vm.swank);
+
+  }
+  SwankTagsController.$inject = ['$log'];
 
   var SwankInfoBlockComponent = {
     bindings: {swank: '<'},
@@ -83,10 +100,20 @@
     ].join('\n')
   };
 
+  var SwankTagsComponent = {
+    bindings: {swank: '<'},
+    // controller: SwankTagsController,
+    template: [
+      '<div><pre>{{$ctrl|json}}</pre></div>'
+    ].join('\n')
+  };
+
   angular.module('swank.bootstrap', ['swank'])
+    // .factory('_', LoDashFactory)
     .filter('parseMD', SwankParseMDFilter)
     .filter('selectify', SwankSelectify)
     .component('swankInfo', SwankInfoBlockComponent)
+    .component('swankTags', SwankTagsComponent)
     .component('swankPaths', SwankPathsComponent)
     .component('swankPath', SwankPathComponent);
 })(angular);

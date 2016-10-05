@@ -2,12 +2,25 @@
 (function(angular) {
   'use strict';
 
+  function LoDashFactory($window, $log) {
+    try {
+      if (!$window._) {
+        throw new Error('LoDash library not found');
+      }
+      return $window._;
+    } catch (err) {
+      $log.error(err);
+    }
+  }
+  LoDashFactory.$inject = ['$window', '$log'];
+
   function SwankParseMDFilter($log) {
     return function(content) {
       try {
         if (!_.isObject(showdown)) {
           throw new Error('Showdown library not found.');
         }
+        showdown.setOption('tables', true);
         var converter = new showdown.Converter();
         return converter.makeHtml(content);
       } catch (err) {
@@ -32,21 +45,55 @@
   }
   SwankSelectify.$inject = [];
 
+  function SwankBootstrapController(Swank) {
+    angular.extend(this, {
+      api: new Swank(this.api)
+    });
+  }
+  SwankBootstrapController.$inject = ['Swank'];
+
+  function SwankTagsController($log, _) {
+
+  }
+  SwankTagsController.$inject = ['$log', '_'];
+
+  var SwankBootstrapComponent = {
+    bindings: {api: '<'},
+    controller: SwankBootstrapController,
+    template: [
+      '<div class="container">',
+        '<div class="row">',
+          '<div class="col-12">',
+            '<swank-info></swank-info>',
+          '</div>',
+          '<div class="col-12">',
+            '<swank-paths></swank-paths>',
+          '</div>',
+          '<div class="col-12">',
+            '<div class="row">',
+              '<swank-tags></swank-tags>',
+            '</div>',
+        '</div>',
+      '</div>',
+    '</div>'
+    ].join('\n')
+  };
+
   var SwankInfoBlockComponent = {
-    bindings: {swank: '<'},
+    require: {swank: '^swankBootstrap'},
     template: [
       '<div class="panel panel-default">',
         '<div class="panel-heading">',
-          '<h3 class="panel-title">{{$ctrl.swank.doc.info.title}} <small>Version {{$ctrl.swank.doc.info.version}}</h3>',
+          '<h3 class="panel-title">{{$ctrl.swank.api.doc.info.title}} <small>Version {{$ctrl.swank.api.doc.info.version}}</h3>',
         '</div>',
         '<div class="panel-body">',
-          '<div ng-if="$ctrl.swank.doc.info.description">',
+          '<div ng-if="$ctrl.swank.api.doc.info.description">',
             '<h3>Description</h3>',
-            '<div ng-bind-html="$ctrl.swank.doc.info.description | parseMD"></div>',
+            '<div ng-bind-html="$ctrl.swank.api.doc.info.description | parseMD"></div>',
           '</div>',
-          '<div ng-if="$ctrl.swank.doc.info.termsOfService">',
+          '<div ng-if="$ctrl.swank.api.doc.info.termsOfService">',
             '<h3>Description</h3>',
-            '<div ng-bind-html="$ctrl.swank.doc.info.termsOfService | parseMD"></div>',
+            '<div ng-bind-html="$ctrl.swank.api.doc.info.termsOfService | parseMD"></div>',
           '</div>',
         '</div>',
       '</div>'
@@ -54,10 +101,10 @@
   };
 
   var SwankPathsComponent = {
-    bindings: {swank: '<'},
+    require: {swank: '^swankBootstrap'},
     template: [
       '<div class="panel-group" id="pathslist" role="tablist" aria-multiselectable="true">',
-        '<div class="panel panel-primary" ng-repeat="(route, path) in $ctrl.swank.doc.paths">',
+        '<div class="panel panel-primary" ng-repeat="(route, path) in $ctrl.swank.api.doc.paths">',
           '<swank-path route="route" path="path"></swank-path>',
         '</div>',
       '</div>'
@@ -65,7 +112,7 @@
   };
 
   var SwankPathComponent = {
-    require: '^swankPaths',
+    require: {paths: '^swankPaths'},
     bindings: {route: '<', path: '<'},
     template: [
       '<div class="panel-heading" role="tab" id="{{$ctrl.route | selectify}}">',
@@ -77,16 +124,62 @@
       '</div>',
       '<div id="collapse{{$ctrl.route | selectify}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="{{$ctrl.route | selectify}}">',
         '<div class="panel-body">',
-          '<pre>{{$ctrl.path | json}}</pre>',
+          '<swank-operation></swank-operation>',
+          // '<pre>{{$ctrl.path | json}}</pre>',
         '</div>',
       '</div>',
     ].join('\n')
   };
 
+  var SwankOperationComponent = {
+    require: {path: '^swankPath'},
+    template: [
+      '<div class="panel panel-default" ng-repeat="(method,operation) in $ctrl.path.path track by $index">',
+        '<div class="panel-title">{{method}} - {{$ctrl.path.route}} - {{operation.summary}}</div>',
+        '<div class="panel-body">',
+          '<h4>Implementation Notes</h4>',
+          '<div ng-bind-html="operation.description | parseMD"></div>',
+          '<h4 ng-if="operation.parameters.length > 0">Parameters</h4>',
+          '<swank-parameters ng-if="operation.parameters.length > 0" parameters="operation.parameters"></swank-parameters>',
+          '<h4>Response Messages</h4>',
+          '<swank-responses responses="operation.responses"></swank-responses>',
+        '</div>',
+      '</div>'
+    ].join('\n')
+  };
+
+  var SwankParametersComponent = {
+    bindings: {parameters: '<'},
+    template: [
+    '<div>{{$ctrl.parameters | json}}</div>'
+    ].join('\n')
+  };
+
+  var SwankResponsesComponent = {
+    bindings: {responses: '<'},
+    template: [
+      '<div>{{$ctrl.responses | json}}</div>'
+    ].join('\n')
+  };
+
+  var SwankTagsComponent = {
+    require: {swank: '^swankBootstrap'},
+    controller: SwankTagsController,
+    template: [
+      '<div><pre>{{$ctrl.swank|json}}</pre></div>'
+    ].join('\n')
+  };
+
   angular.module('swank.bootstrap', ['swank'])
+    .factory('_', LoDashFactory)
     .filter('parseMD', SwankParseMDFilter)
     .filter('selectify', SwankSelectify)
-    .component('swankInfo', SwankInfoBlockComponent)
+    .component('swankBootstrap', SwankBootstrapComponent)
+    // .component('swankInfo', SwankInfoBlockComponent)
+    .component('swankTags', SwankTagsComponent)
     .component('swankPaths', SwankPathsComponent)
-    .component('swankPath', SwankPathComponent);
+    .component('swankPath', SwankPathComponent)
+    .component('swankOperation', SwankOperationComponent)
+    .component('swankParameters', SwankParametersComponent)
+    .component('swankResponses', SwankResponsesComponent);
 })(angular);
