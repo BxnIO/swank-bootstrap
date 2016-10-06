@@ -135,14 +135,18 @@
     require: {path: '^swankPath'},
     template: [
       '<div class="panel panel-default" ng-repeat="(method,operation) in $ctrl.path.path track by $index">',
-        '<div class="panel-title">{{method}} - {{$ctrl.path.route}} - {{operation.summary}}</div>',
+        '<div class="panel-heading"><h3 class="panel-title">',
+          '<span class="label label-default">{{method}}</span> {{$ctrl.path.route}} <span class="pull-right">{{operation.summary}}</span>',
+        '</h3></div>',
         '<div class="panel-body">',
           '<h4>Implementation Notes</h4>',
           '<div ng-bind-html="operation.description | parseMD"></div>',
           '<h4 ng-if="operation.parameters.length > 0">Parameters</h4>',
-          '<swank-parameters ng-if="operation.parameters.length > 0" parameters="operation.parameters"></swank-parameters>',
+          '<swank-parameters ng-if="operation.parameters.length > 0" parameters="operation.parameters">',
+          '</swank-parameters>',
           '<h4>Response Messages</h4>',
-          '<swank-responses responses="operation.responses"></swank-responses>',
+          '<swank-responses responses="operation.responses">',
+          '</swank-responses>',
         '</div>',
       '</div>'
     ].join('\n')
@@ -150,15 +154,43 @@
 
   var SwankParametersComponent = {
     bindings: {parameters: '<'},
+    transclude: true,
     template: [
-    '<div>{{$ctrl.parameters | json}}</div>'
+    '<table class="table">',
+      '<tr>',
+        '<th>Parameter</th>',
+        '<th>Description</th>',
+        '<th>Parameter Type</th>',
+        '<th>Data Type</th>',
+      '</tr>',
+      '<tr ng-repeat="parameter in $ctrl.parameters" parameter="parameter">',
+        '<td>{{parameter.name}}</td>',
+        '<td>{{parameter.description}}</td>',
+        '<td>{{parameter.in}}</td>',
+        '<td>{{parameter.type}}</td>',
+      '</tr>',
+    '</table>'
+    // '<div><swank-parameter ng-repeat="parameter in $ctrl.parameters" parameter="parameter"></swank-parameter></div>'
     ].join('\n')
   };
 
   var SwankResponsesComponent = {
     bindings: {responses: '<'},
     template: [
-      '<div>{{$ctrl.responses | json}}</div>'
+      '<table class="table">',
+      '<tr>',
+        '<th>HTTP Status Code</th>',
+        '<th>Reason</th>',
+        '<th>Response Model</th>',
+        '<th>Headers</th>',
+      '</tr>',
+      '<tr ng-repeat="(number,response) in $ctrl.responses">',
+        '<td>{{number}}</td>',
+        '<td>{{response.description}}</td>',
+        '<td>{{response.schema}}</td>',
+        '<td>{{response.headers}}</td>',
+      '</tr>',
+    '</table>'
     ].join('\n')
   };
 

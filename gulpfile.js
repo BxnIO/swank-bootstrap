@@ -9,6 +9,7 @@ var gulp = require('gulp'),
     open = require('gulp-open');
 
 var sources = ['src/**/*.js'];
+var watchlist = ['src/**/*.js', './*.html', 'gulpfile.js'];
 
 gulp.task('clean', function() {
   return del(['dist/*']);
@@ -31,21 +32,19 @@ gulp.task('connect', function() {
 });
 
 gulp.task('reload', function() {
-  gulp.src('./**/*.*')
+  gulp.src(watchlist)
     .pipe(connect.reload());
 });
 
 gulp.task('watch', function() {
-  gulp.watch('./**/*.{html,js}', ['reload']);
+  gulp.watch(watchlist, ['reload']);
 });
 
 gulp.task('open', function() {
   gulp.src(__filename)
-    .pipe(open({uri: 'http://localhost:8080/test.html'}));
+    .pipe(open({uri: 'http://localhost:8080/test.html', app: 'google-chrome'}));
 });
 
-gulp.task('dev', function() {
-  return gulp.watch(['gulpfile.js','src/**/*.{html,js}'], ['build','connect','open', 'watch']);
-});
+gulp.task('dev', ['build','connect','open', 'watch']);
 
 gulp.task('default', ['connect', 'open', 'watch']);
