@@ -3,13 +3,24 @@
     <div class="col-12">
       <swank-info></swank-info>
     </div>
-    <div class="col-12">
+  </div>
+  <div class="row" ng-switch="$ctrl.groupBy">
+    <div class="col-12" ng-switch-when="tag">
+      <swank-tags></swank-tags>
+    </div>
+    <div class="col-12" ng-switch-when="route">
       <swank-paths></swank-paths>
     </div>
+    <div class="col-12" ng-switch-when="method">
+      <swank-methods></swank-methods>
+    </div>
+    <div class="col-12" ng-switch-default>
+      <swank-tags></swank-tags>
+    </div>
+  </div>
+  <div class="row" ng-if="$ctrl.debug">
     <div class="col-12">
-      <div class="row">
-        <swank-tags></swank-tags>
-      </div>
+      <pre>{{$ctrl.api|json}}</pre>
     </div>
   </div>
 </div>

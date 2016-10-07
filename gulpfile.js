@@ -9,7 +9,7 @@ var gulp = require('gulp'),
     open = require('gulp-open');
 
 var sources = ['src/**/*.js'];
-var watchlist = ['src/**/*.js', './*.html', 'gulpfile.js'];
+var watchlist = ['src/**/*.js', './*.html', 'src/views/*.html', 'gulpfile.js'];
 
 gulp.task('clean', function() {
   return del(['dist/*']);

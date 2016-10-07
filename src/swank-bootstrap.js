@@ -64,60 +64,62 @@
    */
   function SwankBootstrapController(Swank) {
     angular.extend(this, {
-      api: new Swank(this.api)
+      api: new Swank(this.api),
+      debug: true
     });
+    var groupBy = this.groupBy || 'tag';
+    this.api.groupPaths(groupBy);
   }
   SwankBootstrapController.$inject = ['Swank'];
 
-  function SwankTagsController($log, _) {
-
-  }
-  SwankTagsController.$inject = ['$log', '_'];
-
   var SwankBootstrapComponent = {
-    bindings: {api: '<'},
+    bindings: {api: '<', groupBy: '@?'},
     controller: SwankBootstrapController,
-    templateUrl: 'views/swank-bootstrap.html'
+    templateUrl: 'src/views/swank-bootstrap.html'
   };
 
   var SwankInfoBlockComponent = {
     require: {swank: '^swankBootstrap'},
-    templateUrl: 'views/swank-info-block.html'
+    templateUrl: 'src/views/swank-info-block.html'
   };
 
   var SwankPathsComponent = {
     require: {swank: '^swankBootstrap'},
-    templateUrl: 'views/swank-paths.html'
+    bindings: {tag: '<?'},
+    templateUrl: 'src/views/swank-paths.html'
   };
 
   var SwankPathComponent = {
-    require: {paths: '^swankPaths'},
+    require: {paths: '^?swankPaths'},
     bindings: {route: '<', path: '<'},
-    templateUrl: 'views/swank-path.html'
+    templateUrl: 'src/views/swank-path.html'
   };
 
   var SwankOperationComponent = {
     require: {path: '^swankPath'},
-    templateUrl: 'views/swank-operation.html'
+    templateUrl: 'src/views/swank-operation.html'
   };
 
   var SwankParametersComponent = {
     bindings: {parameters: '<'},
     transclude: true,
-    templateUrl: 'views/swank-parameters.html'
+    templateUrl: 'src/views/swank-parameters.html'
   };
 
   var SwankResponsesComponent = {
     bindings: {responses: '<'},
-    templateUrl: 'views/swank-responses.html'
+    templateUrl: 'src/views/swank-responses.html'
   };
 
   var SwankTagsComponent = {
     require: {swank: '^swankBootstrap'},
-    controller: SwankTagsController,
-    template: [
-      '<div><pre>{{$ctrl.swank|json}}</pre></div>'
-    ].join('\n')
+    templateUrl: 'src/views/swank-tags.html'
+  };
+
+  var SwankTagComponent = {
+    require: {tags: '^?swankTags'},
+    bindings: {tag: '<', path: '<'},
+    templateUrl: 'src/views/swank-tag.html'
   };
 
   angular.module('swank.bootstrap', ['swank'])
@@ -127,6 +129,7 @@
     .component('swankBootstrap', SwankBootstrapComponent)
     // .component('swankInfo', SwankInfoBlockComponent)
     .component('swankTags', SwankTagsComponent)
+    .component('swankTag', SwankTagComponent)
     .component('swankPaths', SwankPathsComponent)
     .component('swankPath', SwankPathComponent)
     .component('swankOperation', SwankOperationComponent)

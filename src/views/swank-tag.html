@@ -1,0 +1,12 @@
+<div class="panel-heading" role="tab" id="tag-{{$ctrl.tag | selectify}}">
+  <h4 class="panel-title">
+    <a role="button" data-toggle="collapse" data-parent="#tagslist" href="#collapsetag-{{$ctrl.tag | selectify}}" aria-expanded="false" aria-controls="collapsetag-{{$ctrl.tag | selectify}}">
+      {{$ctrl.tag}}
+    </a>
+  </h4>
+</div>
+<div id="collapsetag-{{$ctrl.tag | selectify}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="{{$ctrl.tag | selectify}}">
+  <div class="panel-body">
+    <swank-paths tag="$ctrl.tag"></swank-paths>
+  </div>
+</div>
