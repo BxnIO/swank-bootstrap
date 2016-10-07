@@ -1,0 +1,14 @@
+<table class="table">
+  <tr>
+    <th>HTTP Status Code</th>
+    <th>Reason</th>
+    <th>Response Model</th>
+    <th>Headers</th>
+  </tr>
+  <tr ng-repeat="(number,response) in $ctrl.responses">
+    <td>{{number}}</td>
+    <td>{{response.description}}</td>
+    <td>{{response.schema}}</td>
+    <td>{{response.headers}}</td>
+  </tr>
+</table>

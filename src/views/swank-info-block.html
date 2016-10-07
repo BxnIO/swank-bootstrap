@@ -1,0 +1,15 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">{{$ctrl.swank.api.doc.info.title}} <small>Version {{$ctrl.swank.api.doc.info.version}}</h3>
+  </div>
+  <div class="panel-body">
+    <div ng-if="$ctrl.swank.api.doc.info.description">
+      <h3>Description</h3>
+      <div ng-bind-html="$ctrl.swank.api.doc.info.description | parseMD"></div>
+    </div>
+    <div ng-if="$ctrl.swank.api.doc.info.termsOfService">
+      <h3>Description</h3>
+      <div ng-bind-html="$ctrl.swank.api.doc.info.termsOfService | parseMD"></div>
+    </div>
+  </div>
+</div>

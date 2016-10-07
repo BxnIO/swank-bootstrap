@@ -1,0 +1,12 @@
+<div class="panel-heading" role="tab" id="{{$ctrl.route | selectify}}">
+  <h4 class="panel-title">
+    <a role="button" data-toggle="collapse" data-parent="#pathslist" href="#collapse{{$ctrl.route | selectify}}" aria-expanded="false" aria-controls="collapse{{$ctrl.route | selectify}}">
+      {{$ctrl.route}}
+    </a>
+  </h4>
+</div>
+<div id="collapse{{$ctrl.route | selectify}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="{{$ctrl.route | selectify}}">
+  <div class="panel-body">
+    <swank-operation></swank-operation>
+  </div>
+</div>

@@ -1,0 +1,5 @@
+<div class="panel-group" id="pathslist" role="tablist" aria-multiselectable="true">
+  <div class="panel panel-primary" ng-repeat="(route, path) in $ctrl.swank.api.doc.paths">
+    <swank-path route="route" path="path"></swank-path>
+  </div>
+</div>

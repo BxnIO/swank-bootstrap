@@ -1,0 +1,14 @@
+<table class="table">
+  <tr>
+    <th>Parameter</th>
+    <th>Description</th>
+    <th>Parameter Type</th>
+    <th>Data Type</th>
+  </tr>
+  <tr ng-repeat="parameter in $ctrl.parameters" parameter="parameter">
+    <td>{{parameter.name}}</td>
+    <td>{{parameter.description}}</td>
+    <td>{{parameter.in}}</td>
+    <td>{{parameter.type}}</td>
+  </tr>
+</table>
